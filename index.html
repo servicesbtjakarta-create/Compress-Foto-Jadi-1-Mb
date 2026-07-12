@@ -7,6 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
         #result { margin-top: 20px; }
+        #info { margin-top: 10px; font-weight: bold; color: #555; }
         img { max-width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px; }
         .btn { display: inline-block; padding: 10px 15px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px; }
         .btn:hover { background: #0056b3; }
@@ -18,18 +19,18 @@
 
     <!-- Input file -->
     <input type="file" id="upload" accept="image/*">
+    
+    <!-- Informasi ukuran file asli -->
+    <div id="info"></div>
+
     <div id="settings" style="display:none; margin-top: 10px;">
-    <label for="fileName">Nama file hasil:</label>
-    <input type="text" id="fileName" value="foto-kompres"> .jpg
-</div>
+        <label for="fileName">Nama file hasil:</label>
+        <input type="text" id="fileName" value="foto-kompres"> .jpg
+    </div>
 
-    <!-- Canvas disembunyikan karena hanya dipakai untuk memproses gambar -->
     <canvas id="canvas" style="display:none;"></canvas>
-
-    <!-- Tempat menampilkan hasil -->
     <div id="result"></div>
 
-    <!-- Menghubungkan ke file JavaScript -->
     <script src="app.js"></script>
 </body>
 </html>
