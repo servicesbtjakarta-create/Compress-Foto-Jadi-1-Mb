@@ -11,6 +11,10 @@ upload.addEventListener('change', function(e) {
     // Mengambil nama file asli tanpa ekstensi (misal: "liburan.jpg" jadi "liburan")
     const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
 
+    // Menghitung ukuran foto awal (konversi ke MB agar mudah dibaca)
+    const originalSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+    const originalSizeText = `Ukuran foto awal: ${originalSizeMB} MB`;
+
     result.innerHTML = "<p>Sedang memproses gambar...</p>";
 
     const reader = new FileReader();
@@ -39,8 +43,10 @@ upload.addEventListener('change', function(e) {
             settings.style.display = "block";
             fileNameInput.value = originalName; // Set otomatis ke nama asli
 
+            // Menampilkan info ukuran awal beserta hasil akhir
             result.innerHTML = `
-                <p style="color: green;"><b>Berhasil!</b> Perkiraan ukuran: ${finalSizeKB} KB</p>
+                <p style="color: #555; margin-bottom: 5px;">${originalSizeText}</p>
+                <p style="color: green; margin-top: 0;"><b>Berhasil!</b> Perkiraan ukuran hasil: ${finalSizeKB} KB</p>
                 <img src="${dataUrl}" alt="Hasil"><br>
                 <a id="downloadLink" href="${dataUrl}" download="${originalName}.jpg" class="btn">Download: ${originalName}.jpg</a>
             `;
