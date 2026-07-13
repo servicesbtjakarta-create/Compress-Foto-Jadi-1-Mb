@@ -5,32 +5,299 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kompres Foto di Bawah 1 MB</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-        #result { margin-top: 20px; }
-        img { max-width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px; }
-        .btn { display: inline-block; padding: 10px 15px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px; }
-        .btn:hover { background: #0056b3; }
-        /* Style tambahan untuk info ukuran */
-        .file-info { margin-top: 10px; font-weight: bold; color: #333; }
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #afdbe4;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Tampilan Logo awal dengan ID agar bisa di-adjust melalui JS */
+        #app-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: width 0.1s ease;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .description {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* Custom Upload Area */
+        .upload-wrapper {
+            position: relative;
+            border: 2px dashed #cbd5e1;
+            padding: 30px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            background-color: #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .upload-wrapper:hover {
+            border-color: var(--primary-color);
+            background-color: #eef2ff;
+        }
+
+        .upload-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .upload-text {
+            font-weight: 600;
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .file-info {
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            background: #f0fdf4;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Settings & Input */
+        #settings {
+            margin-top: 20px;
+            text-align: left;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .setting-item {
+            margin-bottom: 15px;
+        }
+
+        .setting-item:last-child {
+            margin-bottom: 0;
+        }
+
+        #settings label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        #fileName {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        #fileName:focus {
+            border-color: var(--primary-color);
+        }
+
+        .ext {
+            margin-left: 8px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Slider Style */
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider-group input[type="range"] {
+            flex: 1;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .slider-val {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            min-width: 45px;
+        }
+
+        /* Result Area */
+        #result {
+            margin-top: 25px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+            box-sizing: border-box;
+            transition: background 0.2s, transform 0.1s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Footer Copyright & Link Style */
+        footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <h2>Alat Pengompres Foto (< 1 MB)</h2>
-    <p>Pilih foto yang ingin dikompres. Sistem otomatis menurunkannya hingga di bawah 1 MB.</p>
 
-    <input type="file" id="upload" accept="image/*">
-    
-    <p id="original-size" class="file-info"></p>
+    <div class="container">
+        <img src="logo.png" alt="Logo Pengompres Foto" id="app-logo">
+        
+        <h2>Compress Foto Jadi 1 Mb</h2>
+        <p class="description">Pilih atau jatuhkan foto Anda di sini. Sistem akan otomatis mengoptimalkan ukurannya hingga di bawah 1 MB dengan tetap menjaga kualitas terbaik.</p>
+        
+        <div class="upload-wrapper">
+            <span class="upload-icon">📸</span>
+            <span class="upload-text">Pilih atau seret foto di sini</span>
+            <span class="upload-hint">Mendukung format gambar (JPG, PNG, JPEG)</span>
+            <input type="file" id="upload" accept="image/*">
+        </div>
 
-    <div id="settings" style="display:none; margin-top: 10px;">
-        <label for="fileName">Nama file hasil:</label>
-        <input type="text" id="fileName" value="foto-kompres"> .jpg
+        <p id="original-size" class="file-info" style="display: none;"></p>
+
+        <div id="settings" style="display:none;">
+            <div class="setting-item">
+                <label for="fileName">Nama File Hasil</label>
+                <div class="input-group">
+                    <input type="text" id="fileName" value="foto-kompres">
+                    <span class="ext">.jpg</span>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="canvas" style="display:none;"></canvas>
+        <div id="result"></div>
     </div>
 
-    <canvas id="canvas" style="display:none;"></canvas>
-
-    <div id="result"></div>
+    <footer>
+        &copy; 2026 Create by Endrarima. All rights reserved.<br>
+        Lihat <a href="https://share.gemini.google/BmupYjH1AdYw" target="_blank" rel="noopener noreferrer">Desain Profesional & Logo Baru</a>.
+    </footer>
 
     <script src="app.js"></script>
+    
+    <script>
+        const logoSlider = document.getElementById('logoSize');
+        const logoImg = document.getElementById('app-logo');
+        const logoValText = document.getElementById('logoSizeVal');
+
+        logoSlider.addEventListener('input', function() {
+            const currentSize = this.value + 'px';
+            logoImg.style.width = currentSize;
+            logoValText.textContent = currentSize;
+        });
+    </script>
 </body>
 </html>
